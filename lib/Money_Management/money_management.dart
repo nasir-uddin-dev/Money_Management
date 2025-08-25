@@ -18,6 +18,93 @@ class _MoneyManagementState extends State<MoneyManagement>
     _tabController = TabController(length: 2, vsync: this);
   }
 
+  void _showFABOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.all(20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                onPressed: () {
+                  Navigator.pop(context);
+                  _showForm(isEarning: true);
+                },
+                child: Text(
+                  'Add Earning',
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                onPressed: () {
+                  Navigator.pop(context);
+                  _showForm(isEarning: false);
+                },
+                child: Text(
+                  'Add Expense',
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showForm({required bool isEarning}) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Text(
+                isEarning ? 'Add Earning' : 'Add Expense',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Title',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 10),
+              TextField(
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Amount',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 10),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isEarning ? Colors.green : Colors.red,
+                  ),
+                  onPressed: () {},
+                  child: Text(
+                    isEarning ? 'Add Earning' : 'Add Expense',
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,28 +137,30 @@ class _MoneyManagementState extends State<MoneyManagement>
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showFABOptions(context),
+        child: Icon(Icons.add, color: Colors.white),
+        backgroundColor: Colors.deepPurple,
+      ),
 
       body: Column(
         children: [
           Row(
             children: [
-              Card(
+              _buildSummaryCard(
+                title: 'Earning',
+                value: 2000.0,
+                color: Colors.green,
+              ),
+              _buildSummaryCard(
+                title: 'Expense',
+                value: 4000.0,
                 color: Colors.red,
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Earning',
-                        style: TextStyle(fontSize: 26, color: Colors.white),
-                      ),
-                      Text(
-                        '15,000',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
+              ),
+              _buildSummaryCard(
+                title: 'Balance',
+                value: 8000.0,
+                color: Colors.blueAccent,
               ),
             ],
           ),
@@ -79,4 +168,32 @@ class _MoneyManagementState extends State<MoneyManagement>
       ),
     );
   }
+}
+
+Widget _buildSummaryCard({
+  required String title,
+  required double value,
+  required Color color,
+}) {
+  return Expanded(
+    child: Card(
+      color: color,
+      child: Padding(
+        padding: EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            Text(title, style: TextStyle(fontSize: 16, color: Colors.white)),
+            Text(
+              value.toString(),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }
